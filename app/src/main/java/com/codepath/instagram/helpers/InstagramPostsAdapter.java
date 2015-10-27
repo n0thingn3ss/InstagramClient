@@ -1,7 +1,9 @@
 package com.codepath.instagram.helpers;
 
 
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,7 +11,9 @@ import android.widget.TextView;
 
 import com.codepath.instagram.R;
 import com.codepath.instagram.models.InstagramPost;
+import com.facebook.drawee.view.SimpleDraweeView;
 
+import java.util.Date;
 import java.util.List;
 
 public class InstagramPostsAdapter extends RecyclerView.Adapter<InstagramPostsAdapter.InstagramPostViewHolder>{
@@ -33,7 +37,9 @@ public class InstagramPostsAdapter extends RecyclerView.Adapter<InstagramPostsAd
     public void onBindViewHolder(InstagramPostViewHolder holder, int position) {
         InstagramPost post = mPosts.get(position);
 
-        holder.mTvPostUser.setText(post.user.userName);
+        holder.mTvUserName.setText(post.user.userName);
+        holder.mSdvUserImage.setImageURI(Uri.parse(post.user.profilePictureUrl));
+        holder.mTvPostDate.setText(DateUtils.getRelativeTimeSpanString(post.createdTime * 1000));
     }
 
     @Override
@@ -42,11 +48,16 @@ public class InstagramPostsAdapter extends RecyclerView.Adapter<InstagramPostsAd
     }
 
     public static class InstagramPostViewHolder extends RecyclerView.ViewHolder {
-        public TextView mTvPostUser;
+        public TextView mTvUserName;
+        public TextView mTvPostDate;
+        public SimpleDraweeView mSdvUserImage;
+
 
         public InstagramPostViewHolder(View instagramPostView) {
             super(instagramPostView);
-            mTvPostUser = (TextView) instagramPostView.findViewById(R.id.tvPostUser);
+            mTvUserName = (TextView) instagramPostView.findViewById(R.id.tvUserName);
+            mSdvUserImage = (SimpleDraweeView) instagramPostView.findViewById(R.id.sdvUserImage);
+            mTvPostDate = (TextView) instagramPostView.findViewById(R.id.tvPostDate);
         }
     }
 }

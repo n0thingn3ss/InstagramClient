@@ -11,6 +11,7 @@ import com.codepath.instagram.R;
 import com.codepath.instagram.helpers.InstagramPostsAdapter;
 import com.codepath.instagram.helpers.Utils;
 import com.codepath.instagram.models.InstagramPost;
+import com.facebook.drawee.backends.pipeline.Fresco;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +23,9 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Fresco.initialize(this);
+
         setContentView(R.layout.activity_home);
 
         RecyclerView rvPosts = (RecyclerView) findViewById(R.id.rvPosts);
