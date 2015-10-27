@@ -29,7 +29,7 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
 
         RecyclerView rvPosts = (RecyclerView) findViewById(R.id.rvPosts);
-        rvPosts.setAdapter(new InstagramPostsAdapter(fetchPosts()));
+        rvPosts.setAdapter(new InstagramPostsAdapter(fetchPosts(), this));
         rvPosts.setLayoutManager(new LinearLayoutManager(this));
     }
 
