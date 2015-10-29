@@ -1,4 +1,4 @@
-package com.codepath.instagram.helpers;
+package com.codepath.instagram.adapters;
 
 
 import android.content.Context;
@@ -18,6 +18,7 @@ import com.codepath.instagram.R;
 import com.codepath.instagram.models.InstagramPost;
 import com.facebook.drawee.view.SimpleDraweeView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class InstagramPostsAdapter extends RecyclerView.Adapter<InstagramPostsAdapter.InstagramPostViewHolder>{
@@ -25,15 +26,26 @@ public class InstagramPostsAdapter extends RecyclerView.Adapter<InstagramPostsAd
     Context mCtx;
 
     public InstagramPostsAdapter(List<InstagramPost> posts, Context ctx) {
-        this.mPosts = posts;
+        if (posts == null) {
+            this.mPosts = new ArrayList<InstagramPost>();
+        } else {
+            this.mPosts = posts;
+        }
         mCtx = ctx;
+    }
+
+    public void add(List<InstagramPost> posts) {
+        if (posts != null) {
+            this.mPosts.addAll(posts);
+            this.notifyDataSetChanged();
+        }
     }
 
     @Override
     public InstagramPostViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
 
-        View instagramPostView = inflater.inflate(R.layout.post_item, parent, false);
+        View instagramPostView = inflater.inflate(R.layout.layout_post_item, parent, false);
         InstagramPostViewHolder viewHolder = new InstagramPostViewHolder(instagramPostView);
 
         return viewHolder;

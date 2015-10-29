@@ -85,6 +85,5 @@
             android:fontFamily="sans-serif"
             android:textSize="14sp"
             android:lineSpacingMultiplier="1.2"/>
-
     </RelativeLayout>
 </RelativeLayout>

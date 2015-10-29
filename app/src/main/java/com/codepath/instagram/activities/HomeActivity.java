@@ -4,21 +4,30 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.codepath.instagram.R;
-import com.codepath.instagram.helpers.InstagramPostsAdapter;
+import com.codepath.instagram.adapters.InstagramPostsAdapter;
 import com.codepath.instagram.helpers.Utils;
 import com.codepath.instagram.models.InstagramPost;
+import com.codepath.instagram.networking.InstagramClient;
 import com.facebook.drawee.backends.pipeline.Fresco;
+import com.loopj.android.http.JsonHttpResponseHandler;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import cz.msebera.android.httpclient.Header;
+
 
 public class HomeActivity extends AppCompatActivity {
     private static final String TAG = "HomeActivity";
+    private static RecyclerView mRvPosts;
+    private static InstagramPostsAdapter mIgPostsAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,9 +37,12 @@ public class HomeActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_home);
 
-        RecyclerView rvPosts = (RecyclerView) findViewById(R.id.rvPosts);
-        rvPosts.setAdapter(new InstagramPostsAdapter(fetchPosts(), this));
-        rvPosts.setLayoutManager(new LinearLayoutManager(this));
+        RecyclerView mRvPosts = (RecyclerView) findViewById(R.id.rvPosts);
+        mIgPostsAdapter = new InstagramPostsAdapter(null, this);
+        mRvPosts.setAdapter(mIgPostsAdapter);
+        mRvPosts.setLayoutManager(new LinearLayoutManager(this));
+
+        InstagramClient.getPopularFeed(getPopularPostResponseHander());
     }
 
     @Override
@@ -65,6 +77,23 @@ public class HomeActivity extends AppCompatActivity {
         }
 
         return posts;
+    }
+
+    private JsonHttpResponseHandler getPopularPostResponseHander() {
+        return new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                // Root JSON in response is an dictionary i.e { "data : [ ... ] }
+                // Handle resulting parsed JSON response here
+                Log.d(TAG, "response code:" + statusCode + "\n" + response.toString());
+                mIgPostsAdapter.add(Utils.decodePostsFromJsonResponse(response));
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String res, Throwable t) {
+                // called when response HTTP status is "4XX" (eg. 401, 403, 404)
+            }
+        };
     }
 
 }
