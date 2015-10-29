@@ -11,15 +11,11 @@ import android.view.MenuItem;
 import com.codepath.instagram.R;
 import com.codepath.instagram.adapters.InstagramCommentsAdapter;
 import com.codepath.instagram.helpers.Utils;
-import com.codepath.instagram.models.InstagramComment;
 import com.codepath.instagram.networking.InstagramClient;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import cz.msebera.android.httpclient.Header;
 
