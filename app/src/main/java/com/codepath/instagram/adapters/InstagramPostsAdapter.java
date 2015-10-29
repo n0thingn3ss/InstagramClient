@@ -4,11 +4,7 @@ package com.codepath.instagram.adapters;
 import android.content.Context;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
-import android.text.SpannableStringBuilder;
-import android.text.Spanned;
 import android.text.format.DateUtils;
-import android.text.style.ForegroundColorSpan;
-import android.text.style.TypefaceSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,7 +20,7 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import java.util.ArrayList;
 import java.util.List;
 
-public class InstagramPostsAdapter extends RecyclerView.Adapter<InstagramPostsAdapter.InstagramPostViewHolder>{
+public class InstagramPostsAdapter extends RecyclerView.Adapter<InstagramPostsAdapter.InstagramPostViewHolder> {
     List<InstagramPost> mPosts;
     Context mCtx;
 
@@ -82,7 +78,7 @@ public class InstagramPostsAdapter extends RecyclerView.Adapter<InstagramPostsAd
             holder.mTvViewAllComments.setVisibility(View.VISIBLE);
 
             for (InstagramComment comment : post.comments.subList(post.comments.size() - 3, post.comments.size() - 1)) {
-                TextView tvComment = (TextView) LayoutInflater.from(mCtx).inflate(R.layout.layout_comment_item, null, false);
+                TextView tvComment = (TextView) LayoutInflater.from(mCtx).inflate(R.layout.layout_comment_item_text, null, false);
                 Utils.renderStyledUserNameWithExtraText(comment.user.userName, comment.text, tvComment, mCtx);
                 holder.mLlComments.addView(tvComment);
             }
