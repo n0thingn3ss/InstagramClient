@@ -12,9 +12,12 @@ import android.text.style.TypefaceSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.codepath.instagram.R;
+import com.codepath.instagram.helpers.Utils;
+import com.codepath.instagram.models.InstagramComment;
 import com.codepath.instagram.models.InstagramPost;
 import com.facebook.drawee.view.SimpleDraweeView;
 
@@ -65,29 +68,24 @@ public class InstagramPostsAdapter extends RecyclerView.Adapter<InstagramPostsAd
         }
 
         if (post.caption != null && post.caption != "") {
-            String userName = post.user.userName;
-
-            SpannableStringBuilder ssb = new SpannableStringBuilder(userName + " " + post.caption);
-            ssb.setSpan(
-                    new ForegroundColorSpan(
-                            mCtx.getResources().getColor(R.color.blue_text)
-                    ),
-                    0,
-                    userName.length(),
-                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-            );
-            ssb.setSpan(
-                    new TypefaceSpan(
-                            "sans-serif-medium"
-                    ),
-                    0,
-                    userName.length(),
-                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-            );
-            holder.mTvUserNameDesc.setText(ssb);
+            Utils.renderStyledUserNameWithExtraText(post.user.userName, post.caption, holder.mTvUserNameDesc, mCtx);
             holder.mTvUserNameDesc.setVisibility(View.VISIBLE);
         } else {
             holder.mTvUserNameDesc.setVisibility(View.GONE);
+        }
+
+        holder.mLlComments.removeAllViews();
+        holder.mTvViewAllComments.setVisibility(View.GONE);
+
+        if (post.commentsCount > 0) {
+            holder.mTvViewAllComments.setText(String.format(mCtx.getString(R.string.view_all_comments), post.commentsCount));
+            holder.mTvViewAllComments.setVisibility(View.VISIBLE);
+
+            for (InstagramComment comment : post.comments.subList(post.comments.size() - 3, post.comments.size() - 1)) {
+                TextView tvComment = (TextView) LayoutInflater.from(mCtx).inflate(R.layout.layout_comment_item, null, false);
+                Utils.renderStyledUserNameWithExtraText(comment.user.userName, comment.text, tvComment, mCtx);
+                holder.mLlComments.addView(tvComment);
+            }
         }
     }
 
@@ -103,6 +101,8 @@ public class InstagramPostsAdapter extends RecyclerView.Adapter<InstagramPostsAd
         public SimpleDraweeView mSdvPostImage;
         public TextView mTvLikes;
         public TextView mTvUserNameDesc;
+        public TextView mTvViewAllComments;
+        public LinearLayout mLlComments;
 
         public InstagramPostViewHolder(View instagramPostView) {
             super(instagramPostView);
@@ -113,6 +113,8 @@ public class InstagramPostsAdapter extends RecyclerView.Adapter<InstagramPostsAd
             mSdvPostImage = (SimpleDraweeView) instagramPostView.findViewById(R.id.sdvPostImage);
             mTvLikes = (TextView) instagramPostView.findViewById(R.id.tvLikes);
             mTvUserNameDesc = (TextView) instagramPostView.findViewById(R.id.tvUserNameDesc);
+            mTvViewAllComments = (TextView) instagramPostView.findViewById(R.id.tvViewAllComments);
+            mLlComments = (LinearLayout) instagramPostView.findViewById(R.id.llComments);
         }
     }
 }
