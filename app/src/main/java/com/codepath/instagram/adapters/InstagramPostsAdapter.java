@@ -2,6 +2,7 @@ package com.codepath.instagram.adapters;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.text.format.DateUtils;
@@ -12,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.codepath.instagram.R;
+import com.codepath.instagram.activities.CommentsActivity;
 import com.codepath.instagram.helpers.Utils;
 import com.codepath.instagram.models.InstagramComment;
 import com.codepath.instagram.models.InstagramPost;
@@ -76,6 +78,23 @@ public class InstagramPostsAdapter extends RecyclerView.Adapter<InstagramPostsAd
         if (post.commentsCount > 0) {
             holder.mTvViewAllComments.setText(String.format(mCtx.getString(R.string.view_all_comments), post.commentsCount));
             holder.mTvViewAllComments.setVisibility(View.VISIBLE);
+
+            // TODO Probably this is wrong you are adding multiple event listeners but when you add to
+            // the view holder like book search example you are adding it only once
+            holder.mTvViewAllComments.setOnClickListener(new View.OnClickListener() {
+                private String mMediaId;
+                @Override
+                public void onClick(View v) {
+                    Intent i = new Intent(mCtx, CommentsActivity.class);
+                    i.putExtra("mediaId", mMediaId);
+                    mCtx.startActivity(i);
+                }
+
+                private View.OnClickListener init(String mediaId) {
+                    mMediaId = mediaId;
+                    return this;
+                }
+            }.init(post.mediaId));
 
             for (InstagramComment comment : post.comments.subList(post.comments.size() - 3, post.comments.size() - 1)) {
                 TextView tvComment = (TextView) LayoutInflater.from(mCtx).inflate(R.layout.layout_comment_item_text, null, false);
