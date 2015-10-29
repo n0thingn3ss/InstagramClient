@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.codepath.instagram.R;
 import com.codepath.instagram.adapters.InstagramPostsAdapter;
@@ -32,6 +33,11 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (!Utils.isNetworkAvailable(this)) {
+            Toast.makeText(this, "Unable to connect to network. Check later.", Toast.LENGTH_LONG).show();
+            return;
+        }
 
         Fresco.initialize(this);
 
