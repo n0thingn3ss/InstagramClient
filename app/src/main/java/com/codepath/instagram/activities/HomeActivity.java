@@ -35,7 +35,7 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         if (!Utils.isNetworkAvailable(this)) {
-            Toast.makeText(this, "Unable to connect to network. Check later.", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Unable to connect to network. Check later.", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -49,6 +49,15 @@ public class HomeActivity extends AppCompatActivity {
         mRvPosts.setLayoutManager(new LinearLayoutManager(this));
 
         InstagramClient.getPopularFeed(getPopularPostResponseHander());
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (!Utils.isNetworkAvailable(this)) {
+            Toast.makeText(this, "Unable to connect to network. Check later.", Toast.LENGTH_SHORT).show();
+            return;
+        }
     }
 
     @Override

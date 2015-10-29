@@ -31,6 +31,6 @@
         android:layout_height="wrap_content"
         android:id="@+id/tvCommentDate"
         android:layout_below="@+id/tvComment"
-        android:layout_toRightOf="@+id/tvComment"
-        android:layout_toEndOf="@+id/tvComment"/>
+        android:layout_toRightOf="@+id/sdvUserImage"
+        android:layout_toEndOf="@+id/sdvUserImage"/>
 </RelativeLayout>
