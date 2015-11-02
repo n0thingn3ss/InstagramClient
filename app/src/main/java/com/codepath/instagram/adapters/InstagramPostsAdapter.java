@@ -113,7 +113,13 @@ public class InstagramPostsAdapter extends RecyclerView.Adapter<InstagramPostsAd
                 }
             }.init(post.mediaId));
 
-            for (InstagramComment comment : post.comments.subList(post.comments.size() - 3, post.comments.size() - 1)) {
+            List<InstagramComment> lastTwoComments;
+            if (post.commentsCount <= 2) {
+                lastTwoComments = post.comments;
+            } else {
+                lastTwoComments = post.comments.subList(post.comments.size() - 3, post.comments.size() - 1);
+            }
+            for (InstagramComment comment : lastTwoComments) {
                 TextView tvComment = (TextView) LayoutInflater.from(mCtx).inflate(R.layout.layout_comment_item_text, null, false);
                 Utils.renderStyledUserNameWithExtraText(comment.user.userName, comment.text, tvComment, mCtx);
                 holder.mLlComments.addView(tvComment);

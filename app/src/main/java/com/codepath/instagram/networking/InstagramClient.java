@@ -22,6 +22,9 @@ public class InstagramClient extends OAuthBaseClient {
     private static final String USER_FEED_URL = "users/self/feed";
     private static final String POPULAR_FEED_URL = "media/popular";
     private static final String COMMENT_URL = "media/{0}/comments";
+    private static final String SEARCH_USERS_URL = "users/search";
+    private static final String SEARCH_TAGS_URL = "tags/search";
+
 
     public InstagramClient(Context context) {
         super(context, REST_API_CLASS, REST_URL,
@@ -42,7 +45,19 @@ public class InstagramClient extends OAuthBaseClient {
         String url = getApiUrl(MessageFormat.format(COMMENT_URL, mediaId));
         RequestParams params = getDefaultRequestParams();
         params.put("access_token", client.getAccessToken().getToken());
-        client.get(getApiUrl(COMMENT_URL), params, responseHandler);
+        client.get(url, params, responseHandler);
+    }
+
+    public void searchUsers(String srch, JsonHttpResponseHandler responseHandler) {
+        RequestParams params = getDefaultRequestParams();
+        params.put("q", srch);
+        client.get(getApiUrl(SEARCH_USERS_URL), params, responseHandler);
+    }
+
+    public void searchTags(String srch, JsonHttpResponseHandler responseHandler) {
+        RequestParams params = getDefaultRequestParams();
+        params.put("q", srch);
+        client.get(getApiUrl(SEARCH_TAGS_URL), params, responseHandler);
     }
 
     private static RequestParams getDefaultRequestParams() {

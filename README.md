@@ -12,8 +12,11 @@ This is the starter project for the Instagram Client Project.
 * <tt>Colors</tt> => We've included some of the colors (in <tt>colors.xml</tt>) that you'll need. You'll noticed that the mocks will refer to the color name instead of the hex value.
 * <tt>Dependencies</tt> => We've pulled in the dependencies you need (with the correct versions) into <tt>build.gradle</tt> so you can skip this step when you come across it in the guides. These include [Fresco](https://github.com/facebook/fresco), [RecyclerView](https://developer.android.com/reference/android/support/v7/widget/RecyclerView.html), and [android-async-http](http://loopj.com/android-async-http/).
 
+## Assignment 3: Build an Instagram Photo Viewer - Ready for Review
+  ![Assignment 3] (https://raw.githubusercontent.com/n0thingn3ss/InstagramClient/master/instagram_assignment_day_3.gif)
+
 ## Assignment 2: Build an Instagram Photo Viewer - Ready for Review
-  ![Assignment 1] (https://raw.githubusercontent.com/n0thingn3ss/InstagramClient/master/instagram_assignment_day_2.gif)
+  ![Assignment 2] (https://raw.githubusercontent.com/n0thingn3ss/InstagramClient/master/instagram_assignment_day_2.gif)
 
 ## Assignment 1: Build an Instagram Photo Viewer - Ready for Review
   ![Assignment 1] (https://raw.githubusercontent.com/n0thingn3ss/InstagramClient/master/instagram_assignment_day_1.gif)
