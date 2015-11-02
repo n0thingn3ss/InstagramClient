@@ -6,4 +6,15 @@
 
     <string name="view_all_comments">View all %1$d comments</string>
     <string name="title_activity_comments_">Comments_Activity</string>
+
+    <string name="login_info">Log in to see photos and videos from your friends</string>
+    <string name="login_app_name">Instagram</string>
+    <string name="login_sign_up">SIGN UP</string>
+    <string name="login_log_in">LOG IN</string>
+    <string name="login_user_name">User Name</string>
+    <string name="login_forgot">Forgot?</string>
+    <string name="login_or">OR</string>
+    <string name="login_fb_login_desc">Log in with Facebook</string>
+    <string name="login_fb_logo_desc">fb logo</string>
+    <string name="login_password">Password</string>
 </resources>

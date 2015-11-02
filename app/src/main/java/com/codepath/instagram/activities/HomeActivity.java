@@ -48,7 +48,7 @@ public class HomeActivity extends AppCompatActivity {
         mRvPosts.setAdapter(mIgPostsAdapter);
         mRvPosts.setLayoutManager(new LinearLayoutManager(this));
 
-        InstagramClient.getPopularFeed(getPopularPostResponseHander());
+        new InstagramClient(this).getPopularFeed(getPopularPostResponseHander());
     }
 
     @Override
@@ -107,6 +107,7 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onFailure(int statusCode, Header[] headers, String res, Throwable t) {
                 // called when response HTTP status is "4XX" (eg. 401, 403, 404)
+                Log.d(TAG, "response code:" + statusCode + "::" + res);
             }
         };
     }
