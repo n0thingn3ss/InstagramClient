@@ -19,7 +19,8 @@ public class InstagramClient extends OAuthBaseClient {
     public static final String REST_CONSUMER_KEY = "70a6a53f7f56413096cab50643edd709";
     public static final String REST_CONSUMER_SECRET = "88a522068bbd4ed5b523101b98ea2d30";
 
-    private static final String FEED_URL = "media/popular";
+    private static final String USER_FEED_URL = "users/self/feed";
+    private static final String POPULAR_FEED_URL = "media/popular";
     private static final String COMMENT_URL = "media/{0}/comments";
 
     public InstagramClient(Context context) {
@@ -27,8 +28,14 @@ public class InstagramClient extends OAuthBaseClient {
                 REST_CONSUMER_KEY, REST_CONSUMER_SECRET, Constants.REDIRECT_URI, Constants.SCOPE);
     }
 
+    public void getUserFeed(JsonHttpResponseHandler responseHandler) {
+        RequestParams params = getDefaultRequestParams();
+        params.put("access_token", client.getAccessToken().getToken());
+        client.get(getApiUrl(USER_FEED_URL), params, responseHandler);
+    }
+
     public void getPopularFeed(JsonHttpResponseHandler responseHandler) {
-        client.get(getApiUrl(FEED_URL), getDefaultRequestParams(), responseHandler);
+        client.get(getApiUrl(POPULAR_FEED_URL), getDefaultRequestParams(), responseHandler);
     }
 
     public void getComments(String mediaId, JsonHttpResponseHandler responseHandler) {

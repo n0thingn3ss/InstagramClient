@@ -10,6 +10,7 @@ import android.view.MenuItem;
 
 import com.codepath.instagram.R;
 import com.codepath.instagram.adapters.InstagramCommentsAdapter;
+import com.codepath.instagram.core.MainApplication;
 import com.codepath.instagram.helpers.Utils;
 import com.codepath.instagram.networking.InstagramClient;
 import com.facebook.drawee.backends.pipeline.Fresco;
@@ -37,7 +38,7 @@ public class CommentsActivity  extends AppCompatActivity {
         mRvComments.setAdapter(mIgCommentsAdapter);
         mRvComments.setLayoutManager(new LinearLayoutManager(this));
 
-        new InstagramClient(this).getComments(getIntent().getStringExtra("mediaId"), getCommentsResponseHander());
+        MainApplication.getRestClient().getComments(getIntent().getStringExtra("mediaId"), getCommentsResponseHander());
     }
 
     @Override
