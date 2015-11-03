@@ -22,10 +22,13 @@ public class InstagramClient extends OAuthBaseClient {
     public static final String REST_CONSUMER_SECRET = "88a522068bbd4ed5b523101b98ea2d30";
 
     private static final String USER_FEED_URL = "users/self/feed";
+    private static final String USER_RECENT_PHOTOS = "users/{0}/media/recent";
     private static final String POPULAR_FEED_URL = "media/popular";
     private static final String COMMENT_URL = "media/{0}/comments";
     private static final String SEARCH_USERS_URL = "users/search";
     private static final String SEARCH_TAGS_URL = "tags/search";
+    private static final String TAG_RECENT_PHOTOS = "tags/{0}/media/recent";
+
     private SyncHttpClient mSyncHttpClient = new SyncHttpClient();
 
 
@@ -42,6 +45,19 @@ public class InstagramClient extends OAuthBaseClient {
 
     public void getPopularFeed(JsonHttpResponseHandler responseHandler) {
         client.get(getApiUrl(POPULAR_FEED_URL), getDefaultRequestParams(), responseHandler);
+    }
+
+    public void getUserRecentPhotos(String userId, JsonHttpResponseHandler responseHandler) {
+        String url = getApiUrl(MessageFormat.format(USER_RECENT_PHOTOS, userId));
+        RequestParams params = getDefaultRequestParams();
+        params.put("access_token", client.getAccessToken().getToken());
+        client.get(url, params, responseHandler);
+    }
+
+    public void getRecentPhotosByTag(String tag, JsonHttpResponseHandler responseHandler) {
+        String url = getApiUrl(MessageFormat.format(TAG_RECENT_PHOTOS, tag));
+        RequestParams params = getDefaultRequestParams();
+        client.get(url, params, responseHandler);
     }
 
     public void getComments(String mediaId, JsonHttpResponseHandler responseHandler) {

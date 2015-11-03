@@ -43,6 +43,9 @@
         <activity
             android:name=".activities.CommentsActivity"
             android:label="Comment" />
+        <activity
+            android:name=".activities.PhotoGridActivity"
+            android:label="@string/title_activity_photo_grid"/>
 
         <service android:name=".services.PostsIntentService"/>
     </application>

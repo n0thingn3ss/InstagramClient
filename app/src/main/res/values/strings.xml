@@ -5,7 +5,8 @@
     <string name="action_settings">Settings</string>
 
     <string name="view_all_comments">View all %1$d comments</string>
-    <string name="title_activity_comments_">Comments_Activity</string>
+    <string name="title_activity_comments_">Comments Activity</string>
+    <string name="title_activity_photo_grid">Photos Activity</string>
 
     <string name="login_info">Log in to see photos and videos from your friends</string>
     <string name="login_app_name">Instagram</string>
