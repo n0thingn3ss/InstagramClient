@@ -68,7 +68,7 @@ public class PostsFragment extends Fragment {
                 // Your code to refresh the list here.
                 // Make sure you call swipeContainer.setRefreshing(false)
                 // once the network request has completed successfully.
-                fetchPosts();
+                PostsFragment.this.fetchPosts();
             }
         });
         // Configure the refreshing colors
@@ -76,8 +76,6 @@ public class PostsFragment extends Fragment {
                 android.R.color.holo_green_light,
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
-
-
 
         mRvPosts = (RecyclerView) v.findViewById(R.id.rvPosts);
         mIgPostsAdapter = new InstagramPostsAdapter(null, v.getContext());
@@ -144,6 +142,7 @@ public class PostsFragment extends Fragment {
                 InstagramPosts postsObj = (InstagramPosts) intent.getSerializableExtra(
                         PostsIntentService.KEY_RESULTS);
                 mIgPostsAdapter.add(postsObj.mPosts);
+                mSwipeRefreshLayout.setRefreshing(false);
             } else {
                 // handle failure
             }
