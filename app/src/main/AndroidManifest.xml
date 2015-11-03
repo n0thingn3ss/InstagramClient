@@ -43,6 +43,8 @@
         <activity
             android:name=".activities.CommentsActivity"
             android:label="Comment" />
+
+        <service android:name=".services.PostsIntentService"/>
     </application>
 
 </manifest>

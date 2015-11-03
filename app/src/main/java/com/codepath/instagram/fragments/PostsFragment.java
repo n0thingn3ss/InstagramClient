@@ -1,8 +1,14 @@
 package com.codepath.instagram.fragments;
 
+import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -17,7 +23,9 @@ import com.codepath.instagram.adapters.InstagramPostsAdapter;
 import com.codepath.instagram.core.MainApplication;
 import com.codepath.instagram.helpers.Utils;
 import com.codepath.instagram.models.InstagramPost;
+import com.codepath.instagram.models.InstagramPosts;
 import com.codepath.instagram.persistence.InstagramClientDatabase;
+import com.codepath.instagram.services.PostsIntentService;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.json.JSONObject;
@@ -81,9 +89,25 @@ public class PostsFragment extends Fragment {
         return v;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Register for the particular broadcast based on ACTION string
+        IntentFilter filter = new IntentFilter(PostsIntentService.ACTION);
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(postsReceiver, filter);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        // Unregister the listener when the application is paused
+        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(postsReceiver);
+    }
+
     private void fetchPosts() {
         if (Utils.isNetworkAvailable(getActivity())) {
-            MainApplication.getRestClient().getUserFeed(getUserFeedResponseHander());
+            Intent i = new Intent(getActivity(), PostsIntentService.class);
+            getActivity().startService(i);
         } else {
             Toast.makeText(getActivity(), "Unable to connect to network. From Cache. Check later.", Toast.LENGTH_SHORT).show();
             mIgPostsAdapter.add(mDb.getAllInstagramPosts());
@@ -112,4 +136,17 @@ public class PostsFragment extends Fragment {
             }
         };
     }
+
+    private BroadcastReceiver postsReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getIntExtra(PostsIntentService.KEY_RESULT_CODE, Activity.RESULT_CANCELED) == Activity.RESULT_OK) {
+                InstagramPosts postsObj = (InstagramPosts) intent.getSerializableExtra(
+                        PostsIntentService.KEY_RESULTS);
+                mIgPostsAdapter.add(postsObj.mPosts);
+            } else {
+                // handle failure
+            }
+        }
+    };
 }

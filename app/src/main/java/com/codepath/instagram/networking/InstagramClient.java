@@ -6,8 +6,10 @@ import com.codepath.instagram.helpers.Constants;
 import com.codepath.oauth.OAuthAsyncHttpClient;
 import com.codepath.oauth.OAuthBaseClient;
 import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
+import com.loopj.android.http.SyncHttpClient;
 
 import org.scribe.builder.api.Api;
 
@@ -24,6 +26,7 @@ public class InstagramClient extends OAuthBaseClient {
     private static final String COMMENT_URL = "media/{0}/comments";
     private static final String SEARCH_USERS_URL = "users/search";
     private static final String SEARCH_TAGS_URL = "tags/search";
+    private SyncHttpClient mSyncHttpClient = new SyncHttpClient();
 
 
     public InstagramClient(Context context) {
@@ -58,6 +61,12 @@ public class InstagramClient extends OAuthBaseClient {
         RequestParams params = getDefaultRequestParams();
         params.put("q", srch);
         client.get(getApiUrl(SEARCH_TAGS_URL), params, responseHandler);
+    }
+
+    public void getUserFeedSynchronously(AsyncHttpResponseHandler responseHandler) {
+        RequestParams params = getDefaultRequestParams();
+        params.put("access_token", client.getAccessToken().getToken());
+        mSyncHttpClient.get(getApiUrl(USER_FEED_URL), params, responseHandler);
     }
 
     private static RequestParams getDefaultRequestParams() {
