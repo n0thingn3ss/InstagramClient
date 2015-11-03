@@ -10,22 +10,28 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.codepath.instagram.R;
 import com.codepath.instagram.adapters.InstagramPostsAdapter;
 import com.codepath.instagram.core.MainApplication;
 import com.codepath.instagram.helpers.Utils;
+import com.codepath.instagram.models.InstagramPost;
+import com.codepath.instagram.persistence.InstagramClientDatabase;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.json.JSONObject;
+
+import java.util.List;
 
 import cz.msebera.android.httpclient.Header;
 
 public class PostsFragment extends Fragment {
     private static final String TAG = "PostsFragment";
-    private static RecyclerView mRvPosts;
-    private static InstagramPostsAdapter mIgPostsAdapter;
-    private static SwipeRefreshLayout mSwipeRefreshLayout;
+    private RecyclerView mRvPosts;
+    private InstagramPostsAdapter mIgPostsAdapter;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
+    private InstagramClientDatabase mDb;
 
     public static PostsFragment newInstance() {
         return new PostsFragment();
@@ -37,6 +43,7 @@ public class PostsFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mDb = InstagramClientDatabase.getInstance(getActivity().getApplicationContext());
     }
 
     @Nullable
@@ -53,7 +60,7 @@ public class PostsFragment extends Fragment {
                 // Your code to refresh the list here.
                 // Make sure you call swipeContainer.setRefreshing(false)
                 // once the network request has completed successfully.
-                MainApplication.getRestClient().getUserFeed(getUserFeedResponseHander());
+                fetchPosts();
             }
         });
         // Configure the refreshing colors
@@ -69,9 +76,18 @@ public class PostsFragment extends Fragment {
         mRvPosts.setAdapter(mIgPostsAdapter);
         mRvPosts.setLayoutManager(new LinearLayoutManager(v.getContext()));
 
-        MainApplication.getRestClient().getUserFeed(getUserFeedResponseHander());
+        fetchPosts();
 
         return v;
+    }
+
+    private void fetchPosts() {
+        if (Utils.isNetworkAvailable(getActivity())) {
+            MainApplication.getRestClient().getUserFeed(getUserFeedResponseHander());
+        } else {
+            Toast.makeText(getActivity(), "Unable to connect to network. From Cache. Check later.", Toast.LENGTH_SHORT).show();
+            mIgPostsAdapter.add(mDb.getAllInstagramPosts());
+        }
     }
 
     private JsonHttpResponseHandler getUserFeedResponseHander() {
@@ -81,9 +97,12 @@ public class PostsFragment extends Fragment {
                 // Root JSON in response is an dictionary i.e { "data : [ ... ] }
                 // Handle resulting parsed JSON response here
                 Log.d(TAG, "response code:" + statusCode + "\n" + response.toString());
-                mIgPostsAdapter.add(Utils.decodePostsFromJsonResponse(response));
+                List<InstagramPost> posts = Utils.decodePostsFromJsonResponse(response);
+                mIgPostsAdapter.add(posts);
 
                 mSwipeRefreshLayout.setRefreshing(false);
+                mDb.emptyAllTables();
+                mDb.addInstagramPosts(posts);
             }
 
             @Override

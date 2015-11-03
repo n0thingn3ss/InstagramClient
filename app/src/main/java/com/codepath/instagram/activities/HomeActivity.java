@@ -27,10 +27,6 @@ public class HomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (!checkIsNetworkAvailable()) {
-            return;
-        }
-
         Fresco.initialize(this);
 
         setContentView(R.layout.activity_home);

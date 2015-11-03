@@ -149,16 +149,79 @@ public class InstagramClientDatabase extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // TODO: Implement this method
+        if (oldVersion != newVersion) {
+            // Simplest implementation is to drop all old tables and recreate them
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_POST_COMMENTS);
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_COMMENTS);
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_POSTS);
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_IMAGES);
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_USERS);
+
+            onCreate(db);
+        }
     }
 
     public void emptyAllTables() {
         // TODO: Implement this method to delete all rows from all tables
+        SQLiteDatabase db = getWritableDatabase();
+
+        db.beginTransaction();
+        try {
+            db.delete(TABLE_POST_COMMENTS, null, null);
+            db.delete(TABLE_COMMENTS, null, null);
+            db.delete(TABLE_POSTS, null, null);
+            db.delete(TABLE_IMAGES, null, null);
+            db.delete(TABLE_USERS, null, null);
+
+            db.setTransactionSuccessful();
+        } catch (Exception e) {
+            Log.d(TAG, "Error while deleting tables");
+            e.printStackTrace();
+        } finally {
+            db.endTransaction();
+        }
     }
 
     public void addInstagramPosts(List<InstagramPost> posts) {
         // TODO: Implement this method
         // Take a look at the helper methods addImage, addComment, etc as you implement this method
         // It's also a good idea to do this work in a transaction
+
+        if (posts == null) {
+            Log.d(TAG, "posts can't be empty");
+        }
+
+        SQLiteDatabase db = getWritableDatabase();
+        db.beginTransaction();
+        try {
+            for (InstagramPost post : posts) {
+                long userId = addorUpdateUser(post.user);
+                long imageId = addImage(post.image);
+
+                ContentValues values = new ContentValues();
+                values.put(KEY_POST_MEDIA_ID, post.mediaId);
+                values.put(KEY_POST_USER_ID_FK, userId);
+                values.put(KEY_POST_IMAGE_ID_FK, imageId);
+                values.put(KEY_POST_CAPTION, post.caption);
+                values.put(KEY_POST_LIKES_COUNT, post.likesCount);
+                values.put(KEY_POST_COMMENTS_COUNT, post.commentsCount);
+                values.put(KEY_POST_CREATED_TIME, post.createdTime);
+
+                long postId = db.insert(TABLE_POSTS, null, values);
+
+                if (post.comments != null) {
+                    for (InstagramComment comment : post.comments) {
+                        addComment(comment, postId);
+                    }
+                }
+            }
+            db.setTransactionSuccessful();
+        } catch (Exception e) {
+            Log.wtf(TAG, "Error while trying to add posts to database");
+            e.printStackTrace();
+        } finally {
+            db.endTransaction();
+        }
     }
 
     // Poor man's "upsert".
