@@ -12,6 +12,7 @@ import android.text.style.ImageSpan;
 
 import com.codepath.instagram.R;
 import com.codepath.instagram.fragments.PostsFragment;
+import com.codepath.instagram.fragments.ProfileFragment;
 import com.codepath.instagram.fragments.SearchFragment;
 import com.codepath.instagram.helpers.SmartFragmentStatePagerAdapter;
 
@@ -40,6 +41,9 @@ public class HomeFragmentStatePagerAdapter extends SmartFragmentStatePagerAdapte
                 break;
             case 1:
                 fragment = SearchFragment.newInstance();
+                break;
+            case 4:
+                fragment = ProfileFragment.newInstance();
                 break;
             default:
                 fragment = PostsFragment.newInstance();

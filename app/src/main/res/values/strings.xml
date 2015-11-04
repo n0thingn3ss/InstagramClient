@@ -20,4 +20,6 @@
     <string name="login_password">Password</string>
 
     <string name="search">Search</string>
+
+    <string name="profile_photos">photos</string>
 </resources>

@@ -1,5 +1,7 @@
 package com.codepath.instagram.models;
 
+import com.loopj.android.http.JsonHttpResponseHandler;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -13,6 +15,7 @@ public class InstagramUser implements Serializable {
     public String fullName;
     public String profilePictureUrl;
     public String userId;
+    public int photoCount = 0;
 
     public static InstagramUser fromJson(JSONObject jsonObject) {
         if (jsonObject == null) {
@@ -26,6 +29,13 @@ public class InstagramUser implements Serializable {
             user.userName = jsonObject.getString("username");
             user.fullName = jsonObject.optString("full_name", "");
             user.profilePictureUrl = jsonObject.getString("profile_picture");
+
+            try {
+                JSONObject counts = jsonObject.getJSONObject("counts");
+                user.photoCount = counts.getInt("media");
+            } catch (JSONException e) {
+              // Eat and do nothing e.printStackTrace();
+            }
         } catch (JSONException e) {
             e.printStackTrace();
             return null;

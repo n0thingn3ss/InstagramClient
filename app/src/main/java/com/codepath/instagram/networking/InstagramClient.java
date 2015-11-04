@@ -23,6 +23,7 @@ public class InstagramClient extends OAuthBaseClient {
 
     private static final String USER_FEED_URL = "users/self/feed";
     private static final String USER_RECENT_PHOTOS = "users/{0}/media/recent";
+    private static final String USER_PROFILE = "users/self";
     private static final String POPULAR_FEED_URL = "media/popular";
     private static final String COMMENT_URL = "media/{0}/comments";
     private static final String SEARCH_USERS_URL = "users/search";
@@ -45,6 +46,12 @@ public class InstagramClient extends OAuthBaseClient {
 
     public void getPopularFeed(JsonHttpResponseHandler responseHandler) {
         client.get(getApiUrl(POPULAR_FEED_URL), getDefaultRequestParams(), responseHandler);
+    }
+
+    public void getUserProfile(JsonHttpResponseHandler responseHandler) {
+        RequestParams params = getDefaultRequestParams();
+        params.put("access_token", client.getAccessToken().getToken());
+        client.get(getApiUrl(USER_PROFILE), params, responseHandler);
     }
 
     public void getUserRecentPhotos(String userId, JsonHttpResponseHandler responseHandler) {
