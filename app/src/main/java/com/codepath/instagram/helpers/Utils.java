@@ -59,6 +59,15 @@ public class Utils {
         return result;
     }
 
+    public static String decodeNextUrlFromJsonResponse(JSONObject jsonObject) {
+        try {
+            return jsonObject.getJSONObject("pagination").getString("next_url");
+        } catch (JSONException e) {
+            return "";
+        }
+
+    }
+
     public static List<InstagramPost> decodePostsFromJsonResponse(JSONObject jsonObject) {
         List<InstagramPost> posts = InstagramPost.fromJson(getDataJsonArray(jsonObject));
         return posts == null ? new ArrayList<InstagramPost>() : posts;

@@ -21,6 +21,7 @@ import android.widget.Toast;
 import com.codepath.instagram.R;
 import com.codepath.instagram.adapters.InstagramPostsAdapter;
 import com.codepath.instagram.core.MainApplication;
+import com.codepath.instagram.helpers.EndlessScrollListener;
 import com.codepath.instagram.helpers.Utils;
 import com.codepath.instagram.models.InstagramPost;
 import com.codepath.instagram.models.InstagramPosts;
@@ -40,6 +41,12 @@ public class PostsFragment extends Fragment {
     private InstagramPostsAdapter mIgPostsAdapter;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private InstagramClientDatabase mDb;
+    private LinearLayoutManager mRvLm;
+    private String mNextUrl = "";
+    private int previousTotal = 0;
+    private boolean loading = true;
+    private int visibleThreshold = 5;
+    int firstVisibleItem, visibleItemCount, totalItemCount;
 
     public static PostsFragment newInstance() {
         return new PostsFragment();
@@ -68,7 +75,7 @@ public class PostsFragment extends Fragment {
                 // Your code to refresh the list here.
                 // Make sure you call swipeContainer.setRefreshing(false)
                 // once the network request has completed successfully.
-                PostsFragment.this.fetchPosts();
+                PostsFragment.this.fetchPosts(false);
             }
         });
         // Configure the refreshing colors
@@ -78,11 +85,44 @@ public class PostsFragment extends Fragment {
                 android.R.color.holo_red_light);
 
         mRvPosts = (RecyclerView) v.findViewById(R.id.rvPosts);
+        mRvLm = new LinearLayoutManager(v.getContext());
+        mRvPosts.setLayoutManager(mRvLm);
         mIgPostsAdapter = new InstagramPostsAdapter(null, v.getContext());
         mRvPosts.setAdapter(mIgPostsAdapter);
-        mRvPosts.setLayoutManager(new LinearLayoutManager(v.getContext()));
 
-        fetchPosts();
+//        mRvPosts.setOnScrollListener(new EndlessScrollListener(visibleThreshold) {
+//            @Override
+//            public void onLoadMore(int page, int totalItemsCount) {
+//                fetchPosts(true);
+//            }
+//        });
+        mRvPosts.setOnScrollListener(new RecyclerView.OnScrollListener() {
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+
+                visibleItemCount = mRvPosts.getChildCount();
+                totalItemCount = mRvLm.getItemCount();
+                firstVisibleItem = mRvLm.findFirstVisibleItemPosition();
+
+                if (loading) {
+                    if (totalItemCount > previousTotal) {
+                        loading = false;
+                        previousTotal = totalItemCount;
+                    }
+                }
+                if (!loading && (totalItemCount - visibleItemCount)
+                        <= (firstVisibleItem + visibleThreshold)) {
+                    // End has been reached
+                    loading = true;
+                    mSwipeRefreshLayout.setRefreshing(true);
+                    fetchPosts(true);
+                }
+            }
+        });
+
+        fetchPosts(false);
 
         return v;
     }
@@ -102,9 +142,12 @@ public class PostsFragment extends Fragment {
         LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(postsReceiver);
     }
 
-    private void fetchPosts() {
+    private void fetchPosts(boolean next) {
         if (Utils.isNetworkAvailable(getActivity())) {
             Intent i = new Intent(getActivity(), PostsIntentService.class);
+            if (next) {
+                i.putExtra("next_url", mNextUrl);
+            }
             getActivity().startService(i);
         } else {
             Toast.makeText(getActivity(), "Unable to connect to network. From Cache. Check later.", Toast.LENGTH_SHORT).show();
@@ -142,6 +185,7 @@ public class PostsFragment extends Fragment {
                 InstagramPosts postsObj = (InstagramPosts) intent.getSerializableExtra(
                         PostsIntentService.KEY_RESULTS);
                 mIgPostsAdapter.add(postsObj.mPosts);
+                mNextUrl = postsObj.mNextUrl;
                 mSwipeRefreshLayout.setRefreshing(false);
             } else {
                 // handle failure

@@ -38,10 +38,8 @@ public class InstagramClient extends OAuthBaseClient {
                 REST_CONSUMER_KEY, REST_CONSUMER_SECRET, Constants.REDIRECT_URI, Constants.SCOPE);
     }
 
-    public void getUserFeed(JsonHttpResponseHandler responseHandler) {
-        RequestParams params = getDefaultRequestParams();
-        params.put("access_token", client.getAccessToken().getToken());
-        client.get(getApiUrl(USER_FEED_URL), params, responseHandler);
+    public void getMorseUserFeedSynchronously(String url, JsonHttpResponseHandler responseHandler) {
+        mSyncHttpClient.get(url, getDefaultRequestParams(), responseHandler);
     }
 
     public void getPopularFeed(JsonHttpResponseHandler responseHandler) {

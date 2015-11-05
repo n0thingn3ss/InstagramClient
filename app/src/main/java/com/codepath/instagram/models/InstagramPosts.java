@@ -5,4 +5,5 @@ import java.util.List;
 
 public class InstagramPosts implements Serializable {
     public List<InstagramPost> mPosts;
+    public String mNextUrl;
 }

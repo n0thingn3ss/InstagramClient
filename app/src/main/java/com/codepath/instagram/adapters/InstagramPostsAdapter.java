@@ -54,7 +54,6 @@ public class InstagramPostsAdapter extends RecyclerView.Adapter<InstagramPostsAd
 
     public void add(List<InstagramPost> posts) {
         if (posts != null) {
-            mPosts.clear();
             mPosts.addAll(posts);
             notifyDataSetChanged();
         }
